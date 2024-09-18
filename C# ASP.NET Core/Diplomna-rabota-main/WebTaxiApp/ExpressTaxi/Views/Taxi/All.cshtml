@@ -1,0 +1,59 @@
+﻿@using ExpressTaxi.Models.Reservation
+@model IEnumerable<ExpressTaxi.Models.Taxi.TaxiAllVM>
+
+@{
+    ViewData["Title"] = "All Taxies";
+}
+
+<style>
+    main {
+        border-width: 1px;
+        border-color: gray;
+        border-style: solid;
+    }
+</style>
+
+@if ((this.User.Identity.IsAuthenticated) && (this.User.IsInRole("Administrator")))
+{
+    <p>
+        <a asp-action="Create">Create New Taxi</a>
+    </p>
+}
+<div class="col-sm-4">
+    <p>
+    <img width="150" height="150" src="https://play-lh.googleusercontent.com/NVmNVeortHJrOTuDyTgyHBIsH4tKIT1FTZYiYee6RrawYrP4fAtXjet1ETwytBD7yTdT" h3="ExpressTaxi - Всички таксита на едно място "alt="alternatetext">
+    </p>
+</div>
+@foreach (var item in Model)
+{
+    <div class="container mt-5 mb-5">
+        <div class="d-flex justify-content-center row">
+            <div class="col-md-10">
+                <div class="row p-2 bg-white border rounded">
+                    <div class="col-md-3 mt-1"><img class="img-fluid img-responsive rounded product-image" src="@Html.DisplayFor(modelItem => item.ImageUrl)"></div>
+                    <div class="col-md-6 mt-1">
+                        <h5>@Html.DisplayFor(modelItem => item.Brand)</h5>
+                        <div class="d-flex flex-row">
+                            <div class="mt-1 mb-1 spec-1">
+                                <span>Година на производство: </span> <span class="dot"></span><span>@Html.DisplayFor(modelItem => item.Year)<br></span>
+                            </div>
+                        </div>
+                        <div class="mt-1 mb-1 spec-1"><span>Екстри:</span> <span class="dot"></span><span>@Html.DisplayFor(modelItem => item.Extras)<br></span></div>
+                        <div class="mt-1 mb-1 spec-1"><span>Двигател:</span> <span class="dot"></span><span>@Html.DisplayFor(modelItem => item.Engine)<br></span></div>
+                        <p class="text-justify text-truncate para mb-0">Шофьор: @Html.DisplayFor(modelItem => item.Driver)<br><br></p>
+                    </div>
+                    <div class="align-items-center align-content-center col-md-3 border-left mt-1">
+                        <h6 class="text-success">Свободно</h6>
+                        <div class="d-flex flex-column mt-4">
+                            <button asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm" type="button">Details</button><button asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm mt-2" type="button">Edit</button><button asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm mt-2" type="button">Delete</button>
+                        </div>
+                    </div>
+                    @await Html.PartialAsync("_OrderPartial", new ReservationCreateBindingModel
+                    {
+                        TaxiId = item.Id
+                    })
+                </div>
+            </div>
+        </div>
+    </div>
+}
